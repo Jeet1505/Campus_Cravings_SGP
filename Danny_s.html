@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danny's Cafex Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter {
+            width: 250px;
+            padding: 15px;
+            border-right: 2px solid #ddd;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+
+        .filter h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .filter ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .filter li {
+            margin-bottom: 10px;
+        }
+
+        .filter a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .menu {
+            margin-left: 270px;
+            margin-right: 270px;
+            flex: 1;
+            padding: 15px;
+        }
+
+        .order-summary {
+            width: 250px;
+            padding: 15px;
+            border-left: 2px solid #ddd;
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+
+        .order-summary h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .order-summary ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .order-summary ul li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .order-summary ul li .item-name {
+            font-weight: bold;
+        }
+
+        .order-summary ul li .item-quantity {
+            margin-left: 10px;
+        }
+
+        .order-summary .total {
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .order-summary .submit-button {
+            margin-top: 20px;
+            padding: 10px;
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .order-summary .submit-button:hover {
+            background-color: #0056b3;
+        }
+
+        .category-section {
+            margin-bottom: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-controls input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ccc;
+            margin: 0 5px;
+        }
+
+        .quantity-controls button {
+            padding: 5px 10px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .quantity-controls button:hover {
+            background-color: #0056b3;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            color: #333;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Danny's Cafe</h1>
+    </header>
+    <div class="container">
+        <div class="filter">
+            <h2>Categories</h2>
+            <ul id="category-list">
+                <!-- Categories will be populated here -->
+            </ul>
+        </div>
+        <div class="menu" id="menu">
+            <!-- Menu items will be populated here -->
+        </div>
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <ul id="order-list">
+                <!-- Order items will be displayed here -->
+            </ul>
+            <p class="total">Total: ₹0</p>
+            <button class="submit-button">Submit Order</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuItems = [
+                { item: "Cold Coffee", price: 40, category: "Beverages" },
+                { item: "Cold Coffee with Topping", price: 50, category: "Beverages" },
+                { item: "Bournvita with Topping", price: 50, category: "Beverages" },
+                { item: "Espresso Coffee", price: 40, category: "Beverages" },
+                { item: "Hot Bournvita", price: 30, category: "Beverages" },
+                { item: "Cold Chocolate", price: 40, category: "Beverages" },
+                { item: "Hot Chocolate", price: 50, category: "Beverages" },
+                { item: "Butter Scotch", price: 40, category: "Beverages" },
+                { item: "Black Currant", price: 40, category: "Beverages" },
+                { item: "Strawberry", price: 40, category: "Beverages" },
+                { item: "Thums Up", price: 20, category: "Beverages" },
+                { item: "Sprite", price: 20, category: "Beverages" },
+                { item: "Paneer Toast", price: 100, category: "Toast" },
+                { item: "Beans Toast", price: 100, category: "Toast" },
+                { item: "Cheese Chilly Garlic Toast", price: 110, category: "Toast" },
+                { item: "Thousand Bread", price: 60, category: "Toast" },
+                { item: "Supreme Cheese Garlic Bread", price: 100, category: "Toast" },
+                { item: "Onion/Capsicum/Tomato Cheese Toast", price: 70, category: "Toast" },
+                { item: "Mixed Veg. Toast", price: 110, category: "Toast" },
+                { item: "Onion Garlic Cheese Toast", price: 100, category: "Toast" },
+                { item: "Masala Maggi", price: 40, category: "Maggi" },
+                { item: "Jele. Masala Maggi", price: 50, category: "Maggi" },
+                { item: "Butter Maggi", price: 50, category: "Maggi" },
+                { item: "Egg Maggi", price: 60, category: "Maggi" },
+                { item: "Veg. Cheese Maggi", price: 70, category: "Maggi" },
+                { item: "Cheese Garlic Maggi", price: 70, category: "Maggi" },
+                { item: "Pizza Base (Soft Base, Baked Cheese)", price: 100, category: "Pizza" },
+                { item: "Margareta Pizza", price: 120, category: "Pizza" },
+                { item: "Onion Capsicum Pizza", price: 120, category: "Pizza" },
+                { item: "Tomato, Capsicum, Onion Cheese", price: 120, category: "Pizza" },
+                { item: "Neapolitan Pizza (Tomato, Capsicum, Onion, Cheese)", price: 120, category: "Pizza" },
+                { item: "Bandrani Pizza (Paneer, Capsicum, Onion, Cheese)", price: 120, category: "Pizza" },
+                { item: "American Pizza (Tomato, Corn, Black Olive, Cheese)", price: 120, category: "Pizza" },
+                { item: "Danny's Special Pizza (Tomato, Capsicum, Corn, Black Olive, Jalapeno, Oregano, Cheese)", price: 130, category: "Pizza" },
+                { item: "Veg. Cheese Pizza", price: 120, category: "Pizza" },
+                { item: "Tandoori Grilled (Capsicum, Paneer, Onion, Tomato gravy)", price: 80, category: "Sandwich" },
+                { item: "Corn Hi Corn Grilled (Corn, Capsicum, Sandwich Dressing)", price: 80, category: "Sandwich" },
+                { item: "Garlic Bonanza Grilled (Garlic, Tomato, Onion, Cheese)", price: 80, category: "Sandwich" },
+                { item: "Green Chatni (Baked Beans, Capsicum, Onion, Bread)", price: 80, category: "Sandwich" },
+                { item: "Tomato Hi Cheese Grilled (Onion, Capsicum, Cheese, Coriander, Sandwich Dressing)", price: 80, category: "Sandwich" },
+                { item: "Onion Grilled (Tomato, Capsicum, Coriander, Green Chilly, Grilled Sandwich)", price: 80, category: "Sandwich" },
+                { item: "Italian Grilled (Tomato, Olive, Cheese)", price: 90, category: "Sandwich" },
+                { item: "Cheese Chilly Grilled", price: 80, category: "Sandwich" },
+                { item: "Danny's Special (Olive, Jalapenos, Corn, Cheese, Sandwich Dressing)", price: 100, category: "Sandwich" },
+                { item: "Cheese Veg. Club", price: 100, category: "Sandwich" },
+                { item: "Three in One (Tomato, Cucumber, Jam, Cheese)", price: 120, category: "Sandwich" },
+                { item: "India Club (Tomato, Cucumber, Capsicum, G. Chilly, Sandwich Dressing)", price: 100, category: "Sandwich" },
+                { item: "Euro Club (Tomato, Cucumber, Capsicum, Cheese, Sandwich Dressing)", price: 100, category: "Sandwich" },
+                { item: "House of Cheese (Lots of Cheese)", price: 120, category: "Sandwich" },
+                { item: "Bread Butter (plain)", price: "30", category: "Sandwich" },
+                { item: "Bread Butter (grill)", price: "40", category: "Sandwich" },
+                { item: "Jam Sandwich(plain)", price: "30", category: "Sandwich" },
+                { item: "Jam Sandwich(grill)", price: "40", category: "Sandwich" },
+                { item: "Butter Jam(plain)", price: "30", category: "Sandwich" },
+                { item: "Butter Jam(grill)", price: "40", category: "Sandwich" },
+                { item: "Veg. Sandwich(plain)", price: "30", category: "Sandwich" },
+                { item: "Veg. Sandwich(grill)", price: "40", category: "Sandwich" },
+                { item: "Cheese Chatni(plain)", price: "60", category: "Sandwich" },
+                { item: "Cheese Chatni(grill)", price: "70", category: "Sandwich" },
+                { item: "Cheese Sandwich(plain)", price: "60", category: "Sandwich" },
+                { item: "Cheese Sandwich(grill)", price: "70", category: "Sandwich" },
+                { item: "Cheese Jam(plain)", price: "60", category: "Sandwich" },
+                { item: "Cheese Jam(grill)", price: "70", category: "Sandwich" },
+                
+                { item: "Indian Panini", price: 120, category: "Panini" },
+                { item: "Mexican Panini", price: 120, category: "Panini" },
+                { item: "Tandoori Panini", price: 120, category: "Panini" },
+                { item: "Veg. Coleslaw", price: 100, category: "Coleslaw" },
+                { item: "Veg. Cheese Grill", price: 80, category: "Grill" },
+                { item: "American Club", price: 100, category: "Club" },
+                { item: "Indo Bread", price: 110, category: "Bread" },
+                { item: "French Fries", price: 80, category: "Fries" },
+                { item: "Mexican Puff", price: 70, category: "Puff" },
+                { item: "Veg. Puff", price: 40, category: "Puff" },
+                { item: "Veg. Cheese Puff", price: 50, category: "Puff" },
+                { item: "Cheese Garlic Puff", price: 100, category: "Puff" },
+                { item: "Mayonnaise Puff", price: 50, category: "Puff" },
+                { item: "Paneer Puff", price: 50, category: "Puff" },
+                { item: "Pizza Puff", price: 80, category: "Puff" },
+                { item: "Danny's SP. Puff", price: 80, category: "Puff" },
+                { item: "Extra Cheese", price: 20, category: "Extra" },
+                { item: "Extra Masala", price: 10, category: "Extra" }
+            ];
+              
+            const categories = Array.from(new Set(menuItems.map(item => item.category)));
+
+            const categoryList = document.getElementById('category-list');
+            const menuDiv = document.getElementById('menu');
+            const orderList = document.getElementById('order-list');
+            const totalDisplay = document.querySelector('.order-summary .total');
+            let order = [];
+
+            categories.forEach(category => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = `#${category}`;
+                a.innerText = category;
+                li.appendChild(a);
+                categoryList.appendChild(li);
+            });
+
+            menuItems.forEach(item => {
+                const sectionId = item.category;
+                let section = document.getElementById(sectionId);
+
+                if (!section) {
+                    section = document.createElement('div');
+                    section.id = sectionId;
+                    section.classList.add('category-section');
+                    const h2 = document.createElement('h2');
+                    h2.innerText = item.category;
+                    section.appendChild(h2);
+
+                    menuDiv.appendChild(section);
+                }
+
+                const table = section.querySelector('table') || document.createElement('table');
+                if (!section.querySelector('table')) section.appendChild(table);
+
+                const row = table.insertRow(-1);
+                const itemNameCell = row.insertCell(0);
+                const itemPriceCell = row.insertCell(1);
+                const itemQuantityCell = row.insertCell(2);
+
+                itemNameCell.innerText = item.item;
+                itemPriceCell.innerText = `₹${item.price}`;
+
+                const quantityDiv = document.createElement('div');
+                quantityDiv.classList.add('quantity-controls');
+
+                const decrementButton = document.createElement('button');
+                decrementButton.innerText = '-';
+                decrementButton.addEventListener('click', () => {
+                    let quantity = parseInt(input.value);
+                    if (quantity > 0) {
+                        quantity--;
+                        input.value = quantity;
+                        updateOrder(item, quantity);
+                    }
+                });
+
+                const incrementButton = document.createElement('button');
+                incrementButton.innerText = '+';
+                incrementButton.addEventListener('click', () => {
+                    let quantity = parseInt(input.value);
+                    quantity++;
+                    input.value = quantity;
+                    updateOrder(item, quantity);
+                });
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.value = '0';
+                input.min = '0';
+                input.readOnly = true;
+
+                quantityDiv.appendChild(decrementButton);
+                quantityDiv.appendChild(input);
+                quantityDiv.appendChild(incrementButton);
+
+                itemQuantityCell.appendChild(quantityDiv);
+            });
+
+            function updateOrder(item, quantity) {
+                const existingItem = order.find(i => i.item === item.item);
+                if (existingItem) {
+                    if (quantity === 0) {
+                        order = order.filter(i => i.item !== item.item);
+                    } else {
+                        existingItem.quantity = quantity;
+                    }
+                } else {
+                    if (quantity > 0) {
+                        order.push({ ...item, quantity });
+                    }
+                }
+                renderOrder();
+            }
+
+            function renderOrder() {
+                orderList.innerHTML = '';
+                let totalAmount = 0;
+
+                order.forEach(orderItem => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span class="item-name">${orderItem.item}</span>
+                        <span class="item-quantity">x ${orderItem.quantity}</span>
+                        <span class="item-price">₹${orderItem.price * orderItem.quantity}</span>
+                    `;
+                    orderList.appendChild(li);
+                    totalAmount += orderItem.price * orderItem.quantity;
+                });
+
+                totalDisplay.innerText = `Total: ₹${totalAmount}`;
+            }
+        });
+    </script>
+</body>
+</html>

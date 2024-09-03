@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Canteen Location</title>
+    <style>
+        /* Body styling */
+body {
+    
+    background: linear-gradient(135deg, #e0f7fa, #81d4fa); /* Gradient background */
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+}
+
+/* Container styling */
+.form-container {
+    background: rgba(255, 255, 255, 0.5); /* 50% transparency */
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+       /* body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            width: 100%;
+            max-width: 400px;
+        }*/
+        h1 {
+            margin-bottom: 20px;
+            color: #0073e6;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .submit-button {
+            background-color: #0073e6;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        .submit-button:hover {
+            background-color: #005bb5;
+        } 
+        .logo {
+            position: absolute; /* Positioning the logo absolutely */
+            top: 10px; /* Adjust the top distance */
+            left: 10px; /* Adjust the left distance */
+            width: 100px; /* Adjust the logo width */
+            height: auto; /* Maintains aspect ratio */
+        }
+    </style>
+</head>
+<body>
+    <img src="Logo.png" alt="Campus Craving Logo" class="logo">
+    <div class="form-container">
+        <h1>Select Canteen Location</h1>
+        <form>
+            <div class="form-group">
+                <label for="location">Select Canteen Location</label>
+                <select id="location" name="location" required>
+                    <option value="" disabled selected>Select your location</option>
+                    <option value="108CT">108CT</option>
+                    <option value="Danny's Cafe">Danny's Cafe</option>
+                    <option value="Food Dudes">Food Dudes</option>
+                    <option value="Nescafe">Nescafe</option>
+                    <option value="Sweet Spot">Sweet Spot</option>
+                    <option value="Tea Post">Tea Post</option>
+                    <option value="LaLa Bhai Sev Sal">LaLa Bhai Sev Sal</option>
+                    <option value="Yogi">Yogi</option>
+                </select>
+            </div>
+            <button type="submit" class="submit-button">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

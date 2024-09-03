@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yogi Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter {
+            width: 250px;
+            padding: 15px;
+            border-right: 2px solid #ddd;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+
+        .filter h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .filter ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .filter li {
+            margin-bottom: 10px;
+        }
+
+        .filter a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .menu {
+            margin-left: 270px;
+            margin-right: 270px;
+            flex: 1;
+            padding: 15px;
+        }
+
+        .order-summary {
+            width: 250px;
+            padding: 15px;
+            border-left: 2px solid #ddd;
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+
+        .order-summary h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .order-summary ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .order-summary ul li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .order-summary ul li .item-name {
+            font-weight: bold;
+        }
+
+        .order-summary ul li .item-quantity {
+            margin-left: 10px;
+        }
+
+        .order-summary .total {
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .order-summary .submit-button {
+            margin-top: 20px;
+            padding: 10px;
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .order-summary .submit-button:hover {
+            background-color: #0056b3;
+        }
+
+        .category-section {
+            margin-bottom: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-controls input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ccc;
+            margin: 0 5px;
+        }
+
+        .quantity-controls button {
+            padding: 5px 10px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .quantity-controls button:hover {
+            background-color: #0056b3;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            color: #333;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Yogi</h1>
+    </header>
+    <div class="container">
+        <div class="filter">
+            <h2>Categories</h2>
+            <ul id="category-list">
+                <!-- Categories will be populated here -->
+            </ul>
+        </div>
+        <div class="menu" id="menu">
+            <!-- Menu items will be populated here -->
+        </div>
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <ul id="order-list">
+                <!-- Order items will be displayed here -->
+            </ul>
+            <p class="total">Total: ₹0</p>
+            <button class="submit-button">Submit Order</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuItems = [
+                { item: "Margherita Pizza (6\")", price: 100, category: "Pizzas" },
+                { item: "Margherita Pizza (9\")", price: 160, category: "Pizzas" },
+                { item: "Veg Cheese Pizza (6\")", price: 120, category: "Pizzas" },
+                { item: "Veg Cheese Pizza (9\")", price: 180, category: "Pizzas" },
+                { item: "Paneer Chilli Special Pizza (6\")", price: 120, category: "Pizzas" },
+                { item: "Paneer Chilli Special Pizza (9\")", price: 180, category: "Pizzas" },
+                { item: "Paneer Tandoori Pizza (6\")", price: 120, category: "Pizzas" },
+                { item: "Paneer Tandoori Pizza (9\")", price: 180, category: "Pizzas" },
+                { item: "Onion Capsicum Pizza (6\")", price: 120, category: "Pizzas" },
+                { item: "Onion Capsicum Pizza (9\")", price: 180, category: "Pizzas" },
+                { item: "Paneer Corn Pizza (6\")", price: 120, category: "Pizzas" },
+                { item: "Paneer Corn Pizza (9\")", price: 180, category: "Pizzas" },
+                { item: "Garlic Bread", price: 80, category: "Appetizer" },
+                { item: "Cheese Garlic Bread (4 pieces)", price: 100, category: "Appetizer" },
+                { item: "French Fries", price: 70, category: "Appetizer" },
+                { item: "Peri Peri French Fries", price: 80, category: "Appetizer" },
+                { item: "Bread Butter Cheese", price: 70, category: "Sandwiches" },
+                { item: "Fruit Jam Cheese", price: 70, category: "Sandwiches" },
+                { item: "Chutney Cheese Special", price: 70, category: "Sandwiches" },
+                { item: "Double Cheese Special", price: 80, category: "Sandwiches" },
+                { item: "Veg. Cheese Special", price: 70, category: "Sandwiches" },
+                { item: "Tikka Masala Special", price: 80, category: "Sandwiches" },
+                { item: "Chocolate Sandwich", price: 70, category: "Sandwiches" },
+                { item: "Chocolate Cheese Special", price: 80, category: "Sandwiches" },
+                { item: "Bombay Kaccha Sandwich", price: 70, category: "Sandwiches" },
+                { item: "Paneer Corn Sandwich", price: 80, category: "Sandwiches" },
+                { item: "Special Cheese Wrap", price: 80, category: "Wrap" },
+                { item: "Paneer Chilli Wrap", price: 90, category: "Wrap" },
+                { item: "Paneer Tandoori Wrap", price: 90, category: "Wrap" },
+                { item: "Cheese Garlic Wrap", price: 90, category: "Wrap" },
+                { item: "Red Cheese Sandwich", price: 90, category: "Sandwiches" },
+                { item: "Green Club Sandwich", price: 90, category: "Sandwiches" },
+                { item: "Mericon Bean Club", price: 90, category: "Sandwiches" },
+                { item: "Paneer Tandoori", price: 100, category: "Sandwiches" },
+                { item: "Cheese Peri Peri Special", price: 100, category: "Sandwiches" },
+                { item: "Paneer Corn Masala", price: 100, category: "Sandwiches" },
+                { item: "Indian Club Sandwich", price: 90, category: "Sandwiches" },
+                { item: "Paneer Delight Club", price: 90, category: "Sandwiches" },
+                { item: "American Club", price: 100, category: "Sandwiches" },
+                { item: "European Club", price: 100, category: "Sandwiches" },
+                { item: "Junglee Paneer Club", price: 100, category: "Sandwiches" },
+                { item: "Regular Club", price: 80, category: "Sandwiches" },
+                { item: "Aloo Tikki Burger", price: 70, category: "Burgers" },
+                { item: "Veg. Cheese Burger", price: 70, category: "Burgers" },
+                { item: "Schezwan Cheese Burger", price: 80, category: "Burgers" },
+                { item: "Cheese Garlic Burger", price: 80, category: "Burgers" },
+                { item: "Peri Peri Special Burger", price: 90, category: "Burgers" },
+                { item: "Double Tikki Burger", price: 100, category: "Burgers" },
+                { item: "Masala Maggi", price: 40, category: "Maggi" },
+                { item: "Veg. Masala Maggi", price: 50, category: "Maggi" },
+                { item: "Butter Maggi", price: 50, category: "Maggi" },
+                { item: "Cheese Maggi", price: 60, category: "Maggi" },
+                { item: "Veg. Cheese Maggi", price: 70, category: "Maggi" },
+                { item: "Strawberry", price: 70, category: "Thick Shakes" },
+                { item: "Mango", price: 70, category: "Thick Shakes" },
+                { item: "Butterscotch", price: 70, category: "Thick Shakes" },
+                { item: "Kiwi", price: 70, category: "Thick Shakes" },
+                { item: "Pineapple", price: 70, category: "Thick Shakes" },
+                { item: "Vanilla", price: 70, category: "Thick Shakes" },
+                { item: "Blueberry", price: 70, category: "Thick Shakes" },
+                { item: "Cranberry", price: 70, category: "Thick Shakes" },
+                { item: "Raspberry", price: 70, category: "Thick Shakes" },
+                { item: "Kaiju-anjeer", price: 70, category: "Thick Shakes" },
+                { item: "Green Apple", price: 70, category: "Thick Shakes" },
+                { item: "Litchi", price: 70, category: "Thick Shakes" },
+                { item: "Cookie & Cream", price: 70, category: "Thick Shakes" },
+                { item: "Chocolate Chips", price: 70, category: "Thick Shakes" },
+                { item: "Blue Curacao", price: 70, category: "Thick Shakes" },
+                { item: "Black Current", price: 70, category: "Thick Shakes" },
+                /*{ item: "Kesar Mohini", price: 'MRP', category: "Ice cream" },
+                { item: "Choco Crackle", price: 'MRP', category: "Ice cream" },
+                { item: "Madagascar Vanilla Crunch", price: 'MRP', category: "Ice cream" },
+                { item: "Nity Fruit Khazana", price: 'MRP', category: "Ice cream" },
+                { item: "Pistachio Almond Fudge", price: 'MRP', category: "Ice cream" },
+                { item: "Silk Chocolate", price: 'MRP', category: "Ice cream" },
+                { item: "Choco Brownie Dip", price: 'MRP', category: "Ice cream" },
+                { item: "Choco Crackle Disc", price: 'MRP', category: "Ice cream" },
+                { item: "American Nuts", price: 'MRP', category: "Ice cream" },
+                { item: "Cookie Disc", price: 'MRP', category: "Ice cream" },
+                { item: "Choco Delight", price: 'MRP', category: "Ice cream" },
+                { item: "Belgian Chocolate", price: 'MRP', category: "Ice cream" },
+                { item: "Kesar Pista", price: 'MRP', category: "Ice cream" },
+                { item: "Choco Brownie", price: 'MRP', category: "Ice cream" },
+                { item: "Nutty Butterscotch", price: 'MRP', category: "Ice cream" },
+                { item: "Choco Raspberry", price: 'MRP', category: "Ice cream" },
+                { item: "Strawberry Swirl", price: 'MRP', category: "Ice cream" },
+                { item: "Funtastic Ice Cream", price: 'MRP', category: "Ice cream" },
+                { item: "Bomber", price: 'MRP', category: "Ice cream" },*/
+            ];
+
+
+            const categories = Array.from(new Set(menuItems.map(item => item.category)));
+
+            const categoryList = document.getElementById('category-list');
+            const menuDiv = document.getElementById('menu');
+            const orderList = document.getElementById('order-list');
+            const totalDisplay = document.querySelector('.order-summary .total');
+            let order = [];
+
+            categories.forEach(category => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = `#${category}`;
+                a.innerText = category;
+                li.appendChild(a);
+                categoryList.appendChild(li);
+            });
+
+            menuItems.forEach(item => {
+                const sectionId = item.category;
+                let section = document.getElementById(sectionId);
+
+                if (!section) {
+                    section = document.createElement('div');
+                    section.id = sectionId;
+                    section.classList.add('category-section');
+                    const h2 = document.createElement('h2');
+                    h2.innerText = item.category;
+                    section.appendChild(h2);
+
+                    menuDiv.appendChild(section);
+                }
+
+                const table = section.querySelector('table') || document.createElement('table');
+                if (!section.querySelector('table')) section.appendChild(table);
+
+                const row = table.insertRow(-1);
+                const itemNameCell = row.insertCell(0);
+                const itemPriceCell = row.insertCell(1);
+                const itemQuantityCell = row.insertCell(2);
+
+                itemNameCell.innerText = item.item;
+                itemPriceCell.innerText = `₹${item.price}`;
+
+                const quantityDiv = document.createElement('div');
+                quantityDiv.classList.add('quantity-controls');
+
+                const decrementButton = document.createElement('button');
+                decrementButton.innerText = '-';
+                decrementButton.addEventListener('click', () => {
+                    let quantity = parseInt(input.value);
+                    if (quantity > 0) {
+                        quantity--;
+                        input.value = quantity;
+                        updateOrder(item, quantity);
+                    }
+                });
+
+                const incrementButton = document.createElement('button');
+                incrementButton.innerText = '+';
+                incrementButton.addEventListener('click', () => {
+                    let quantity = parseInt(input.value);
+                    quantity++;
+                    input.value = quantity;
+                    updateOrder(item, quantity);
+                });
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.value = '0';
+                input.min = '0';
+                input.readOnly = true;
+
+                quantityDiv.appendChild(decrementButton);
+                quantityDiv.appendChild(input);
+                quantityDiv.appendChild(incrementButton);
+
+                itemQuantityCell.appendChild(quantityDiv);
+            });
+
+            function updateOrder(item, quantity) {
+                const existingItem = order.find(i => i.item === item.item);
+                if (existingItem) {
+                    if (quantity === 0) {
+                        order = order.filter(i => i.item !== item.item);
+                    } else {
+                        existingItem.quantity = quantity;
+                    }
+                } else {
+                    if (quantity > 0) {
+                        order.push({ ...item, quantity });
+                    }
+                }
+                renderOrder();
+            }
+
+            function renderOrder() {
+                orderList.innerHTML = '';
+                let totalAmount = 0;
+
+                order.forEach(orderItem => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span class="item-name">${orderItem.item}</span>
+                        <span class="item-quantity">x ${orderItem.quantity}</span>
+                        <span class="item-price">₹${orderItem.price * orderItem.quantity}</span>
+                    `;
+                    orderList.appendChild(li);
+                    totalAmount += orderItem.price * orderItem.quantity;
+                });
+
+                totalDisplay.innerText = `Total: ₹${totalAmount}`;
+            }
+        });
+    </script>
+</body>
+</html>

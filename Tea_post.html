@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeaPost Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter {
+            width: 250px;
+            padding: 15px;
+            border-right: 2px solid #ddd;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+
+        .filter h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .filter ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .filter li {
+            margin-bottom: 10px;
+        }
+
+        .filter a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .menu {
+            margin-left: 270px;
+            margin-right: 270px;
+            flex: 1;
+            padding: 15px;
+        }
+
+        .order-summary {
+            width: 250px;
+            padding: 15px;
+            border-left: 2px solid #ddd;
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+
+        .order-summary h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .order-summary ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .order-summary ul li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .order-summary ul li .item-name {
+            font-weight: bold;
+        }
+
+        .order-summary ul li .item-quantity {
+            margin-left: 10px;
+        }
+
+        .order-summary .total {
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .order-summary .submit-button {
+            margin-top: 20px;
+            padding: 10px;
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .order-summary .submit-button:hover {
+            background-color: #0056b3;
+        }
+
+        .category-section {
+            margin-bottom: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-controls input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ccc;
+            margin: 0 5px;
+        }
+
+        .quantity-controls button {
+            padding: 5px 10px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .quantity-controls button:hover {
+            background-color: #0056b3;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            color: #333;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to TeaPost</h1>
+    </header>
+    <div class="container">
+        <div class="filter">
+            <h2>Categories</h2>
+            <ul id="category-list">
+                <!-- Categories will be populated here -->
+            </ul>
+        </div>
+        <div class="menu" id="menu">
+            <!-- Menu items will be populated here -->
+        </div>
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <ul id="order-list">
+                <!-- Order items will be displayed here -->
+            </ul>
+            <p class="total">Total: ₹0</p>
+            <button class="submit-button">Submit Order</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuItems = [
+                // Tea
+                { item: "Traditional Tea (Half)", price: "12", category: "Chai" },
+                { item: "Traditional Tea (Full)", price: "30", category: "Chai" },
+                { item: "Fresh Rewind Tea", price: 30, category: "Chai" },
+                { item: "Masala Tea", price: 30, category: "Chai" },
+                { item: "Pudina Tea", price: 30, category: "Chai" },
+                { item: "Sulaimani Tea", price: 30, category: "Chai" },
+                { item: "Ginger Fresh Tea", price: 30, category: "Chai" },
+                { item: "Sugar Tea", price: 10, category: "Chai" },
+                { item: "Zafran", price: 30, category: "Chai" },
+                { item: "Black Lemon", price: 30, category: "Chai Without Milk" },
+                { item: "Green Tea", price: 30, category: "Chai Without Milk" },
+                { item: "Tulsi Green Tea", price: 30, category: "Chai Without Milk" },
+                { item: "Healthy Green Tea", price: 30, category: "Chai Without Milk" },
+
+                // Hot Coffee
+                { item: "Espresso", price: 30, category: "Hot Coffee" },
+                { item: "Hot Coffee", price: 40, category: "Hot Coffee" },
+                { item: "Filter Coffee", price: 50, category: "Hot Coffee" },
+                { item: "Hot Coffee Hazelnut", price: 50, category: "Hot Coffee" },
+
+                // Cold Coffee
+                { item: "Classic Cold Coffee", price: 90, category: "Cold Coffee" },
+                { item: "Mocha", price: 100, category: "Cold Coffee" },
+                { item: "Irish Coffee", price: 100, category: "Cold Coffee" },
+                { item: "Caramel Latte", price: 100, category: "Cold Coffee" },
+                { item: "Hazelnut Coffee", price: 100, category: "Cold Coffee" },
+                { item: "Kadal Cold Koffe", price: 100, category: "Cold Coffee" },
+
+                // Chillers
+                { item: "Fruit Punch", price: 50, category: "Chillers" },
+                { item: "Lemon Ginger (Infused Water)", price: 60, category: "Chillers" },
+                { item: "Pineapple Lemonade", price: 60, category: "Chillers" },
+                { item: "Mojito", price: 60, category: "Chillers" },
+                { item: "Hibiscus", price: 60, category: "Chillers" },
+                { item: "Soda Base", price: 60, category: "Chillers" },
+                { item: "Mineral Water", price: 20, category: "Chillers" },
+
+                // Milk
+                { item: "Hot Bournvita", price: 50, category: "Milk" },
+                { item: "Cold Bournvita", price: 50, category: "Milk" },
+                { item: "Cold Bournvita (With Ice Cream)", price: 80, category: "Milk" },
+                { item: "Hot Chocolate", price: 80, category: "Milk" },
+
+                // Milk Shakes
+                { item: "Chocolaty", price: 100, category: "Milk Shakes" },
+                { item: "Strawberry", price: 100, category: "Milk Shakes" },
+                { item: "Mango", price: 100, category: "Milk Shakes" },
+                { item: "Blueberry", price: 100, category: "Milk Shakes" },
+
+                // Beverages
+                { item: "Lemon Iced Tea", price: 60, category: "Beverages" },
+                { item: "Peach Iced Tea", price: 65, category: "Beverages" },
+                { item: "Blueberry Mint Iced Tea", price: 65, category: "Beverages" },
+
+                // Nasta
+                { item: "Phaphda", price: 30, category: "Nasta" },
+                { item: "Samosa", price: 25, category: "Nasta" },
+                { item: "Aloo Paratha", price: 50, category: "Nasta" },
+                { item: "Onion Paratha", price: 50, category: "Nasta" },
+                { item: "Paneer Paratha", price: 60, category: "Nasta" },
+                { item: "Methi Paratha", price: 50, category: "Nasta" },
+                { item: "Aloo Methi Paratha", price: 50, category: "Nasta" },
+                { item: "Paneer Kulcha", price: 60, category: "Nasta" },
+                { item: "Kha Kha Puff", price: 35, category: "Nasta" },
+                { item: "Masala Kha Kha Puff", price: 40, category: "Nasta" },
+                { item: "Masala Butter Puff", price: 40, category: "Nasta" },
+                { item: "Cheese Puff", price: 50, category: "Nasta" },
+                { item: "Chocolate Puff", price: 50, category: "Nasta" },
+                { item: "Cheese Garlic Puff", price: 50, category: "Nasta" },
+                { item: "Veg Garlic Puff", price: 50, category: "Nasta" },
+                { item: "Veg Butter Garlic Puff", price: 50, category: "Nasta" },
+
+                // Noodles
+                { item: "Masala Noodles", price: 70, category: "Noodles" },
+                { item: "Schezwan Noodles", price: 70, category: "Noodles" },
+                { item: "Hakka Cheese Noodles", price: 80, category: "Noodles" },
+                { item: "Cheese Butter Noodles", price: 80, category: "Noodles" },
+                { item: "Extra Cheese", price: 30, category: "Noodles" },
+
+                // Sandwiches
+                { item: "Bread Butter", price: 25, category: "Sandwiches" },
+                { item: "Jam Bread", price: 25, category: "Sandwiches" },
+                { item: "Vegetable", price: 55, category: "Sandwiches" },
+                { item: "Cheese Butter", price: 60, category: "Sandwiches" },
+                { item: "Cheese Jam", price: 60, category: "Sandwiches" },
+                { item: "Cheese Chili", price: 70, category: "Sandwiches" },
+                { item: "Cheese Chili Corn", price: 70, category: "Sandwiches" },
+                { item: "Cheese Chilli Onion", price: 70, category: "Sandwiches" },
+                { item: "Cheese Chilli Tandoori", price: 70, category: "Sandwiches" },
+                { item: "Cheese Paneer Chilli", price: 80, category: "Sandwiches" },
+                { item: "Cheese Chilli (Peri Peri)", price: 80, category: "Sandwiches" },
+                { item: "Cheese Chilli ( Tandoori)", price: 80, category: "Sandwiches" },
+                { item: "Cheese Chilli (Fiery)", price: 80, category: "Sandwiches" },
+               
+
+                // Wraps
+                { item: "Paneer Wrap", price: 80, category: "Wraps" },
+                { item: "Veg Paneer Wrap", price: 80, category: "Wraps" },
+                { item: "Schezwan Paneer Wrap", price: 80, category: "Wraps" },
+                { item: "Tandoori Paneer Wrap", price: 80, category: "Wraps" },
+
+                // Fries
+                { item: "Classic Salted", price: 50, category: "Fries" },
+                { item: "Peri Peri", price: 60, category: "Fries" },
+                { item: "Cheese", price: 70, category: "Fries" },
+                { item: "Peri Peri Cheese", price: 80, category: "Fries" },
+
+                // Puff
+                { item: "Veg Puff", price: 25, category: "Puff" },
+                { item: "Cheese Puff", price: 35, category: "Puff" },
+                { item: "Mexican  Puff", price: 40, category: "Puff" },
+                { item: "Tandoori Puff", price: 40, category: "Puff" },
+                { item: "Peri Peri Puff", price: 40, category: "Puff" },
+                { item: "Paneer Puff", price: 50, category: "Puff" },
+
+                // Extras
+                { item: "Pav/piece", price: "2.5", category: "Extras" },
+                { item: "Chas", price: 15, category: "Extras" },
+                { item: "Sev", price: 20, category: "Extras" },
+                { item: "Butter", price: 20, category: "Extras" },
+                { item: "Dahi", price: 15, category: "Extras" },
+                { item: "Cheese", price: 25, category: "Extras" }
+            ];
+
+            const categories = Array.from(new Set(menuItems.map(item => item.category)));
+
+            const categoryList = document.getElementById('category-list');
+            const menuDiv = document.getElementById('menu');
+            const orderList = document.getElementById('order-list');
+            const totalDisplay = document.querySelector('.order-summary .total');
+            let order = [];
+
+            categories.forEach(category => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = `#${category}`;
+                a.innerText = category;
+                li.appendChild(a);
+                categoryList.appendChild(li);
+            });
+
+            menuItems.forEach(item => {
+                const sectionId = item.category;
+                let section = document.getElementById(sectionId);
+
+                if (!section) {
+                    section = document.createElement('div');
+                    section.id = sectionId;
+                    section.classList.add('category-section');
+                    const h2 = document.createElement('h2');
+                    h2.innerText = item.category;
+                    section.appendChild(h2);
+
+                    menuDiv.appendChild(section);
+                }
+
+                const table = section.querySelector('table') || document.createElement('table');
+                if (!section.querySelector('table')) section.appendChild(table);
+
+                const row = table.insertRow(-1);
+                const itemNameCell = row.insertCell(0);
+                const itemPriceCell = row.insertCell(1);
+                const itemQuantityCell = row.insertCell(2);
+
+                itemNameCell.innerText = item.item;
+                itemPriceCell.innerText = `₹${item.price}`;
+
+                const quantityDiv = document.createElement('div');
+                quantityDiv.classList.add('quantity-controls');
+
+                const decrementButton = document.createElement('button');
+                decrementButton.innerText = '-';
+                decrementButton.addEventListener('click', () => {
+                    let quantity = parseInt(input.value);
+                    if (quantity > 0) {
+                        quantity--;
+                        input.value = quantity;
+                        updateOrder(item, quantity);
+                    }
+                });
+
+                const incrementButton = document.createElement('button');
+                incrementButton.innerText = '+';
+                incrementButton.addEventListener('click', () => {
+                    let quantity = parseInt(input.value);
+                    quantity++;
+                    input.value = quantity;
+                    updateOrder(item, quantity);
+                });
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.value = '0';
+                input.min = '0';
+                input.readOnly = true;
+
+                quantityDiv.appendChild(decrementButton);
+                quantityDiv.appendChild(input);
+                quantityDiv.appendChild(incrementButton);
+
+                itemQuantityCell.appendChild(quantityDiv);
+            });
+
+            function updateOrder(item, quantity) {
+                const existingItem = order.find(i => i.item === item.item);
+                if (existingItem) {
+                    if (quantity === 0) {
+                        order = order.filter(i => i.item !== item.item);
+                    } else {
+                        existingItem.quantity = quantity;
+                    }
+                } else {
+                    if (quantity > 0) {
+                        order.push({ ...item, quantity });
+                    }
+                }
+                renderOrder();
+            }
+
+            function renderOrder() {
+                orderList.innerHTML = '';
+                let totalAmount = 0;
+
+                order.forEach(orderItem => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span class="item-name">${orderItem.item}</span>
+                        <span class="item-quantity">x ${orderItem.quantity}</span>
+                        <span class="item-price">₹${orderItem.price * orderItem.quantity}</span>
+                    `;
+                    orderList.appendChild(li);
+                    totalAmount += orderItem.price * orderItem.quantity;
+                });
+
+                totalDisplay.innerText = `Total: ₹${totalAmount}`;
+            }
+        });
+    </script>
+</body>
+</html>

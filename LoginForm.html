@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* Resetting margins and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Body styling */
+        body {
+            background: linear-gradient(135deg, #e0f7fa, #81d4fa); /* Gradient background */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        /* Container styling */
+        .container {
+            background: rgba(255, 255, 255, 0.5); /* 50% transparency */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        /* Heading styling */
+        .container h1 {
+            font-size: 24px;
+            color: #007BFF;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        /* Phone input area */
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .input-group span {
+            background: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px 0 0 5px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 0 5px 5px 0;
+            outline: none;
+        }
+
+        /* Send OTP button */
+        .input-group button {
+            background: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background 0.3s;
+        }
+
+        .input-group button:hover {
+            background: #0056b3;
+        }
+
+        /* Separator line with text "or" */
+        .separator {
+            margin: 20px 0;
+            position: relative;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .separator:before, .separator:after {
+            content: '';
+            height: 1px;
+            background: #ddd;
+            width: 40%;
+            position: absolute;
+            top: 50%;
+        }
+
+        .separator:before {
+            left: 0;
+        }
+
+        .separator:after {
+            right: 0;
+        }
+
+        /* Sign Up button */
+        .email-btn {
+            background: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .email-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main container -->
+    <div class="container">
+        <h1>Campus Cravings at CHARUSAT</h1>
+        <!-- Input group for phone number and OTP -->
+        <div class="input-group">
+            <input type="text" placeholder="Enter phone number">
+            <a href="Location.html">
+                <button id="Submit">Submit</button>
+            </a>
+        </div>
+        <!-- Separator with "or" -->
+        <div class="separator">or</div>
+        <!-- Sign Up button -->
+        <a href="SignupForm.html">
+        <button class="email-btn">Sign Up</button>
+        </a>
+    </div>
+</body>
+</html>

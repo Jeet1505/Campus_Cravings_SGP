@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>108 CT Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter {
+            width: 250px;
+            padding: 15px;
+            border-right: 2px solid #ddd;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+
+        .filter h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .filter ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .filter li {
+            margin-bottom: 10px;
+        }
+
+        .filter a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .menu {
+            margin-left: 270px;
+            margin-right: 270px;
+            flex: 1;
+            padding: 15px;
+        }
+
+        .order-summary {
+            width: 250px;
+            padding: 15px;
+            border-left: 2px solid #ddd;
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+
+        .order-summary h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .order-summary ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .order-summary ul li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .order-summary ul li .item-name {
+            font-weight: bold;
+        }
+
+        .order-summary ul li .item-quantity {
+            margin-left: 10px;
+        }
+
+        .order-summary .total {
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .order-summary .submit-button {
+            margin-top: 20px;
+            padding: 10px;
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .order-summary .submit-button:hover {
+            background-color: #0056b3;
+        }
+
+        .category-section {
+            margin-bottom: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-controls input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ccc;
+            margin: 0 5px;
+        }
+
+        .quantity-controls button {
+            padding: 5px 10px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .quantity-controls button:hover {
+            background-color: #0056b3;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            color: #333;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to 108 Canteen</h1>
+    </header>
+    <div class="container">
+        <div class="filter">
+            <h2>Categories</h2>
+            <ul id="category-list">
+                <!-- Categories will be populated here -->
+            </ul>
+        </div>
+        <div class="menu" id="menu">
+            <!-- Menu items will be populated here -->
+        </div>
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <ul id="order-list">
+                <!-- Order items will be displayed here -->
+            </ul>
+            <p class="total">Total: ₹0</p>
+            <button class="submit-button">Submit Order</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuItems = [
+                { item: "Punjabi", price: 100, category: "Thali" },
+                { item: "Gujarati", price: 70, category: "Thali" },
+                { item: "Jeera Rice", price: 60, category: "Thali" },
+                { item: "Dal Tadka", price: 60, category: "Thali" },
+                { item: "Cheese Butter (2 slices )", price: "40", category: "Sandwich" },
+                { item: "Cheese Butter ( 3 slices)", price: "60", category: "Sandwich" },
+                { item: "Cheese Chutney (2 slices)", price: "50", category: "Sandwich" },
+                { item: "Cheese Chutney (3 slices)", price: "70", category: "Sandwich" },
+                { item: "Cheese Chilli Corn (2 slices )", price: "50", category: "Sandwich" },
+                { item: "Cheese Chilli Corn (3 slices)", price: "70", category: "Sandwich" },
+                { item: "Mexican Chipotle (2 slices)", price: "60", category: "Sandwich" },
+                { item: "Mexican Chipotle (3 slices)", price: "90", category: "Sandwich" },
+                { item: "Paneer Peri Peri (2 slices )", price: "60", category: "Sandwich" },
+                { item: "Paneer Peri Peri (3 slices)", price: "90", category: "Sandwich" },
+                { item: "Paneer Makhani (2 slices)", price: "60", category: "Sandwich" },
+                { item: "Paneer Makhani (3 slices)", price: "90", category: "Sandwich" },
+                { item: "Plain", price: 50, category: "Burger" },
+                { item: "Cheese", price: 70, category: "Burger" },
+                { item: "Schzewn", price: 70, category: "Burger" },
+                { item: "Double Cheese", price: 90, category: "Burger" },
+                { item: "Woofer", price: 100, category: "Burger" },
+                { item: "Plain with Dip", price: 60, category: "Nachos" },
+                { item: "Cheesy Nacho", price: 70, category: "Nachos" },
+                { item: "Fully Loaded", price: 80, category: "Nachos" },
+                { item: "Dry Manchurian", price: 70, category: "Chinese" },
+                { item: "Chinese Rice", price: 70, category: "Chinese" },
+                { item: "Manchurian Rice", price: 80, category: "Chinese" },
+                { item: "Schezwan Rice", price: 80, category: "Chinese" },
+                { item: "Red Sauce", price: 60, category: "Pasta" },
+                { item: "White Sauce", price: 60, category: "Pasta" },
+                { item: "Pink Sauce", price: 60, category: "Pasta" },
+                { item: "Paneer Bhurji", price: 80, category: "Pasta" },
+                { item: "Chole Bhature", price: 50, category: "Other Items" },
+                { item: "Vadapav", price: 30, category: "Other Items" },
+                { item: "Dabeli", price: 30, category: "Other Items" },
+                { item: "Pav Bhaji", price: 50, category: "Other Items" },
+                { item: "Pav Bhaji Cheese", price: 80, category: "Other Items" },
+                { item: "Hyderabadi Biryani", price: 70, category: "Other Items" },
+                { item: "Plain", price: 50, category: "Dosa" },
+                { item: "Plain Cheese", price: 70, category: "Dosa" },
+                { item: "Masala", price: 70, category: "Dosa" },
+                { item: "Plain Mysore", price: 70, category: "Dosa" },
+                { item: "Mysore Masala", price: 80, category: "Dosa" },
+                { item: "Jini Roll Dosa", price: 100, category: "Dosa" },
+                { item: "Gotala Dosa", price: 100, category: "Dosa" },
+                { item: "Onion", price: 50, category: "Uttappa" },
+                { item: "Tomato", price: 50, category: "Uttappa" },
+                { item: "Mix", price: 60, category: "Uttappa" },
+                { item: "Masala", price: 60, category: "Uttappa" },
+                { item: "Cheese Masala", price: 100, category: "Uttappa" },
+                { item: "Margarita", price: 100, category: "Pizza" },
+                { item: "Mix Veg", price: 100, category: "Pizza" },
+                { item: "Fire House", price: 100, category: "Pizza" },
+                { item: "Hot N Spicy", price: 120, category: "Pizza" },
+                { item: "Paneer Makhani", price: 120, category: "Pizza" },
+                { item: "Paneer Chipotle", price: 120, category: "Pizza" },
+                { item: "Double Cheese", price: 120, category: "Pizza" },
+                { item: "Salted", price: 60, category: "Fries" },
+                { item: "Peri Peri", price: 70, category: "Fries" },
+                { item: "Masala", price: 70, category: "Fries" },
+                { item: "Cheese", price: 80, category: "Fries" },
+                { item: "Plain", price: 40, category: "Maggi" },
+                { item: "Butter", price: 50, category: "Maggi" },
+                { item: "Mix Veg", price: 50, category: "Maggi" },
+                { item: "Paneer", price: 60, category: "Maggi" },
+                { item: "Cheesy", price: 60, category: "Maggi" },
+                { item: "Regular", price: 20, category: "Puff" },
+                { item: "Cheese Puff", price: 30, category: "Puff" },
+                { item: "Paneer Puff", price: 40, category: "Puff" },
+                { item: "Mayo", price: 40, category: "Puff" },
+                { item: "Garlic", price: 40, category: "Puff" },
+                { item: "Schezwan", price: 40, category: "Puff" },
+            ];
+
+            const categories = Array.from(new Set(menuItems.map(item => item.category)));
+
+            const categoryList = document.getElementById('category-list');
+            const menuDiv = document.getElementById('menu');
+            const orderList = document.getElementById('order-list');
+            const totalDisplay = document.querySelector('.order-summary .total');
+            let order = [];
+
+            categories.forEach(category => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = `#${category}`;
+                a.innerText = category;
+                li.appendChild(a);
+                categoryList.appendChild(li);
+            });
+
+            menuItems.forEach(item => {
+                const sectionId = item.category;
+                let section = document.getElementById(sectionId);
+
+                if (!section) {
+                    section = document.createElement('div');
+                    section.id = sectionId;
+                    section.classList.add('category-section');
+                    const h2 = document.createElement('h2');
+                    h2.innerText = item.category;
+                    section.appendChild(h2);
+
+                    menuDiv.appendChild(section);
+                }
+
+                const table = section.querySelector('table') || document.createElement('table');
+                if (!section.querySelector('table')) section.appendChild(table);
+
+                const row = table.insertRow(-1);
+                const itemNameCell = row.insertCell(0);
+                const itemPriceCell = row.insertCell(1);
+                const itemQuantityCell = row.insertCell(2);
+
+                itemNameCell.innerText = item.item;
+                itemPriceCell.innerText = `₹${item.price}`;
+
+                const quantityDiv = document.createElement('div');
+                quantityDiv.classList.add('quantity-controls');
+
+                const decrementButton = document.createElement('button');
+                decrementButton.innerText = '-';
+                decrementButton.addEventListener('click', () => {
+                    let quantity = parseInt(input.value);
+                    if (quantity > 0) {
+                        quantity--;
+                        input.value = quantity;
+                        updateOrder(item, quantity);
+                    }
+                });
+
+                const incrementButton = document.createElement('button');
+                incrementButton.innerText = '+';
+                incrementButton.addEventListener('click', () => {
+                    let quantity = parseInt(input.value);
+                    quantity++;
+                    input.value = quantity;
+                    updateOrder(item, quantity);
+                });
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.value = '0';
+                input.min = '0';
+                input.readOnly = true;
+
+                quantityDiv.appendChild(decrementButton);
+                quantityDiv.appendChild(input);
+                quantityDiv.appendChild(incrementButton);
+
+                itemQuantityCell.appendChild(quantityDiv);
+            });
+
+            function updateOrder(item, quantity) {
+                const existingItem = order.find(i => i.item === item.item);
+                if (existingItem) {
+                    if (quantity === 0) {
+                        order = order.filter(i => i.item !== item.item);
+                    } else {
+                        existingItem.quantity = quantity;
+                    }
+                } else {
+                    if (quantity > 0) {
+                        order.push({ ...item, quantity });
+                    }
+                }
+                renderOrder();
+            }
+
+            function renderOrder() {
+                orderList.innerHTML = '';
+                let totalAmount = 0;
+
+                order.forEach(orderItem => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span class="item-name">${orderItem.item}</span>
+                        <span class="item-quantity">x ${orderItem.quantity}</span>
+                        <span class="item-price">₹${orderItem.price * orderItem.quantity}</span>
+                    `;
+                    orderList.appendChild(li);
+                    totalAmount += orderItem.price * orderItem.quantity;
+                });
+
+                totalDisplay.innerText = `Total: ₹${totalAmount}`;
+            }
+        });
+    </script>
+</body>
+</html>
